@@ -41,6 +41,7 @@ jobs:
 
   publish-image:
     needs: build-and-test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     permissions:
