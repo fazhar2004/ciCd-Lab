@@ -109,7 +109,7 @@ Example response:
 - [X] Containerize the application using Docker
 - [X] Configure Docker Compose
 - [X] Automate builds and tests using GitHub Actions
-- [ ] Publish versioned images to GitHub Container Registry
+- [X] Publish versioned images to GitHub Container Registry
 - [ ] Configure an Ubuntu deployment environment using Ansible
 - [ ] Configure Nginx as a reverse proxy
 - [ ] Implement automated deployment and rollback
@@ -191,3 +191,32 @@ CI job to fail.
 A separate branch was used to demonstrate failure
 detection and recovery without intentionally
 breaking the main branch.
+
+## Container Image Publishing
+
+GitHub Actions automatically builds and publishes Docker images to GitHub Container Registry (GHCR).
+
+### Publishing Workflow
+
+1. A push to `main` triggers the CI workflow.
+2. Maven compiles the application and executes automated tests.
+3. The executable JAR is uploaded as a workflow artifact.
+4. A dependent job builds the Docker image.
+5. The image is published to GHCR using `latest` and commit-specific SHA tags.
+
+The publishing job runs only after the build and test job succeeds.
+
+### Pull and Run
+
+docker pull ghcr.io/fazhar2004/cicd-lab:sha-29ba87d
+
+
+Verify the application:
+
+```powershell
+Invoke-RestMethod http://localhost:8080/api/health
+```
+
+### Versioning
+
+Docker images are tagged with `latest` and a Git commit SHA. Commit-specific tags provide traceability and allow earlier image versions to be selected for rollback.
